@@ -56,7 +56,7 @@ func getCaller(calldepth int) (string, int) {
 	return file, line
 }
 
-var argumentsRegex *regexp.Regexp = regexp.MustCompile("%\\{[A-Za-z]+}")
+var argumentsRegex *regexp.Regexp = regexp.MustCompile("%\\{[A-Za-z_]+}")
 
 type appender func(int, LogLevel, []interface{}) string
 
@@ -123,7 +123,7 @@ const (
 //
 // - "%{SHORT_CALLER}": will be replaced by the name and the line of where the logger has been called (eg: the format is
 // "%{SHORT_CALLER}: %{MESSAGE}" and at line 4 of my file "paprika.go" I have called logger.Info("Starfoullilai"),
-// the message will be: "paprika.go:4: Starfoullilai";
+// the message will be: "paprika.go:4: Starfoullilai");
 //
 // - "%{LONG_CALLER}": will be replaced by the full path of the file and the line of where the logger has been called
 // (if we take the same example as above, but the format is LONG_CALLER instead of SHORT_CALLER, the output will then be:

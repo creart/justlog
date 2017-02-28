@@ -6,6 +6,7 @@ import (
 
 var (
 	logger = NewWithHandlers(NewConsoleHandler(DebugLevel), NewFileHandler("test.txt", ErrorLevel)).SetFormatters(NewFormatter("%{LEVEL}:%{TIME} -> %{MESSAGE}"))
+	lineLogger = NewWithHandlers(NewConsoleHandler()).SetFormatters(NewFormatter("%{SHORT_CALLER} %{LONG_CALLER} EH OUI %{MESSAGE}. Swag"))
 )
 
 // It is quite annoying to test a logging library with unit tests.
@@ -15,4 +16,8 @@ var (
 func TestLogger(t *testing.T) {
 	logger.Debug("yeah", "wow")
 	logger.Error("Output to the file.")
+}
+
+func TestCallerLogger(t *testing.T) {
+	lineLogger.Info("youpidiyeah")
 }

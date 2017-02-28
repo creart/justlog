@@ -83,6 +83,7 @@ func (log *Logger) log(level LogLevel, messages []interface{}) {
 
 	if len(log.formatters) == 0 {
 		// Default formatter
+		message = defaultFormatter.Format(2, level, messages)
 	} else {
 		// Taking the first formatter which handles the current level
 		// in order to avoid conflicts.
@@ -93,7 +94,7 @@ func (log *Logger) log(level LogLevel, messages []interface{}) {
 			}
 			for _, lvl := range lvls {
 				if lvl == level {
-					message = formatter.Format(2, level, messages)
+					message = formatter.Format(5, level, messages)
 					break FORMAT
 				}
 			}
