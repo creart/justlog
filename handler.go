@@ -18,6 +18,8 @@ const (
 	closeArg = '}'
 )
 
+var pid string = strconv.Itoa(os.Getpid())
+
 var simpleMessageChain appender = func(calldepth int, lvl LogLevel, messages []interface{}) string {
 	return fmt.Sprintf(strings.TrimSpace(strings.Repeat("%v ", len(messages))), messages...)
 }
@@ -44,7 +46,7 @@ var simpleLongCallerChain appender = func(calldepth int, lvl LogLevel, messages 
 }
 
 var simplePidChain appender = func(calldepth int, lvl LogLevel, messages []interface{}) string {
-	return strconv.Itoa(os.Getpid())
+	return pid
 }
 
 func getCaller(calldepth int) (string, int) {
@@ -130,16 +132,25 @@ const (
 // "/home/your/path/to/the/file/test.go:4: Starfoullilai");
 //
 // - "%{PID}": will be replaced by the process id.
+//
+// Known bug: add a trailing space at the end of the format, the last char is removed if you have some text after an argument
 func NewFormatter(format string, levels ...LogLevel) Formatter {
 	appenders := make([]appender, 0)
 	freeIndices := make([]int, 0)
 
 	opened := false
+	simple := false
 	currentString := ""
 	for i := 0; i < len(format); i++ {
 		char := format[i]
 		if char == declareArg && (len(format) + 1 > i && format[i + 1] == openArg) {
 			opened = true
+		} else if char == closeArg {
+			opened = false
+			simple = true
+		}
+
+		if simple || len(format) == i + 1 {
 			str := currentString
 			currentString = ""
 			appenders = append(appenders, func(calldepth int, lvl LogLevel, messages []interface{}) string {
@@ -147,9 +158,7 @@ func NewFormatter(format string, levels ...LogLevel) Formatter {
 			})
 			appenders = append(appenders, nil)
 			freeIndices = append(freeIndices, len(appenders) - 1)
-			continue
-		} else if char == closeArg {
-			opened = false
+			simple = false
 			continue
 		}
 
