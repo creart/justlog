@@ -6,7 +6,7 @@ How to use the library?
 -
 First, install it: 
 ```bash
-go get github.com/creart/justlog
+go get github.com/olsdavis/justlog
 ```
 Then, create your logger with the parameters you want:
 ```go
