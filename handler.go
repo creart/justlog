@@ -21,7 +21,7 @@ const (
 var pid string = strconv.Itoa(os.Getpid())
 
 var simpleMessageChain appender = func(calldepth int, lvl LogLevel, messages []interface{}) string {
-	return fmt.Sprintf(strings.TrimSpace(strings.Repeat("%v ", len(messages))), messages...)
+	return strings.Trim(fmt.Sprintf(strings.TrimSpace(strings.Repeat("%v ", len(messages))), messages...), "[]")
 }
 
 var simpleTimeChain appender = func(calldepth int, lvl LogLevel, messages []interface{}) string {
