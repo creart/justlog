@@ -246,7 +246,7 @@ func (handler fileHandler) Handle(log Log) {
 			}
 			handler.file = f
 		} else {
-			f, err := os.OpenFile(handler.path, os.O_APPEND, os.ModeAppend)
+			f, err := os.OpenFile(handler.path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 			if err != nil {
 				panic(fmt.Sprintf("could not open file for path %v, error: %v", handler.path, err))
 			}
