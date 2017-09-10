@@ -6,7 +6,7 @@ var (
 	defaultFormatter Formatter = NewFormatter("%{MESSAGE}")
 )
 
-// A logger object. You can initialize one with New.
+// A logger struct. You can initialize one with New.
 type Logger struct {
 	formatters []Formatter
 	handlers   []Handler

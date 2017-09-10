@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	logger = NewWithHandlers(NewConsoleHandler(DebugLevel), NewFileHandler("test/test.txt", ErrorLevel)).SetFormatters(NewFormatter("%{LEVEL}:%{TIME} -> %{MESSAGE}"))
+	logger = NewWithHandlers(NewConsoleHandler(DebugLevel), NewFileHandler("test/test.txt", ErrorLevel, DebugLevel)).SetFormatters(NewFormatter("%{LEVEL}:%{TIME} -> %{MESSAGE}"))
 	lineLogger = NewWithHandlers(NewConsoleHandler()).SetFormatters(NewFormatter("%{SHORT_CALLER} %{LONG_CALLER} %{PID} EH OUI %{MESSAGE}. Swag "))
 	// Known bug: add a trailing space at the end of the format, the last char is removed if you have some text after an argument
 )
@@ -21,4 +21,10 @@ func TestLogger(t *testing.T) {
 
 func TestCallerLogger(t *testing.T) {
 	lineLogger.Info("youpidiyeah")
+}
+
+func BenchmarkFileWrite(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		logger.Debug("test message quite short")
+	}
 }

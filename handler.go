@@ -236,22 +236,29 @@ func (handler fileHandler) Handle(log Log) {
 	// init file stream
 	if handler.file == nil {
 		if _, err := os.Stat(handler.path); os.IsNotExist(err) {
-			os.MkdirAll(filepath.Dir(handler.path), os.ModePerm)
+			err = os.MkdirAll(filepath.Dir(handler.path), os.ModePerm)
+			if err != nil {
+				panic(fmt.Sprintf("could not create dir %v, error %v", handler.path, err))
+			}
 			f, err := os.Create(handler.path)
 			if err != nil {
 				panic(fmt.Sprintf("could not create log file for path %v, error: %v", handler.path, err))
 			}
 			handler.file = f
+		} else {
+			f, err := os.OpenFile(handler.path, os.O_APPEND, os.ModeAppend)
+			if err != nil {
+				panic(fmt.Sprintf("could not open file for path %v, error: %v", handler.path, err))
+			}
+			handler.file = f
 		}
-		f, err := os.OpenFile(handler.path, 0, os.ModeAppend)
-		if err != nil {
-			panic(fmt.Sprintf("could not open file for path %v, error: %v", handler.path, err))
-		}
-		handler.file = f
 	}
 
 	if log.message != "" {
-		handler.file.WriteString(log.message)
+		_, err := handler.file.WriteString(log.message + "\n")
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
